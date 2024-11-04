@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ExternalLink } from "lucide-react"
@@ -10,8 +13,20 @@ const cuisines = [
 ]
 
 export default function Component() {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const redirectToGrubhub = (cuisine: string) => {
-    window.open(`https://www.grubhub.com/search?queryText=${encodeURIComponent(cuisine)}`, '_blank')
+    if (typeof window !== 'undefined') {
+      window.open(`https://www.grubhub.com/search?queryText=${encodeURIComponent(cuisine)}`, '_blank')
+    }
+  }
+
+  if (!isMounted) {
+    return null // or a loading spinner
   }
 
   return (
