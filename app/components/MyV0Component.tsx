@@ -1,6 +1,3 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ExternalLink } from "lucide-react"
@@ -12,23 +9,7 @@ const cuisines = [
   { name: "French", emoji: "🥐", color: "bg-blue-100 hover:bg-blue-200 text-blue-700" },
 ]
 
-export default function Component() {
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  const redirectToGrubhub = (cuisine: string) => {
-    if (typeof window !== 'undefined') {
-      window.open(`https://www.grubhub.com/search?queryText=${encodeURIComponent(cuisine)}`, '_blank')
-    }
-  }
-
-  if (!isMounted) {
-    return null // or a loading spinner
-  }
-
+function CuisineList() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -45,19 +26,36 @@ export default function Component() {
                 </span>
                 <span className="text-lg font-medium">{cuisine.name}</span>
               </div>
-              <Button
-                onClick={() => redirectToGrubhub(cuisine.name)}
-                aria-label={`Find ${cuisine.name} cuisine on Grubhub`}
-                className={`${cuisine.color} rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 flex items-center space-x-1`}
-                variant="ghost"
-              >
-                <span>Order</span>
-                <ExternalLink className="w-4 h-4" />
-              </Button>
+              <CuisineButton cuisine={cuisine} />
             </li>
           ))}
         </ul>
       </CardContent>
     </Card>
+  )
+}
+
+export default function Component() {
+  return <CuisineList />
+}
+
+// Client Component
+'use client'
+
+function CuisineButton({ cuisine }: { cuisine: { name: string; color: string } }) {
+  const redirectToGrubhub = (cuisine: string) => {
+    window.open(`https://www.grubhub.com/search?queryText=${encodeURIComponent(cuisine)}`, '_blank')
+  }
+
+  return (
+    <Button
+      onClick={() => redirectToGrubhub(cuisine.name)}
+      aria-label={`Find ${cuisine.name} cuisine on Grubhub`}
+      className={`${cuisine.color} rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 flex items-center space-x-1`}
+      variant="ghost"
+    >
+      <span>Order</span>
+      <ExternalLink className="w-4 h-4" />
+    </Button>
   )
 }
